@@ -8,8 +8,10 @@ const imageLinkForm = () => {
         </div>
             
         <div className='flex flex-wrap justify-center mh3'>
-                <input className= 'f4 ph3 pv2 w-70'type='text'></input>
-                <button className=' grow f4 link ph3 pv2 white bg-dark-green'>Detect</button>
+                <div className = 'br4 shadow-5 pa2 tc ' style={{'background':'linear-gradient(to right, rgba(255,0,0,0), rgba(86, 250, 72, 0.69), rgb(20, 255, 0))'}}>
+                    <input className= 'f4 ph7-l pv2 w-90'type='text'></input>
+                    <button className=' grow f4 link ph3 pv2 white bg-dark-green'>Detect</button>
+                </div>
         </div>
             
     </div>
@@ -17,3 +19,5 @@ const imageLinkForm = () => {
 }
 
 export default imageLinkForm;
+
+{/*http://lea.verou.me/css3patterns/*/}
