@@ -20,50 +20,61 @@ import pc from './particlesjs-confi.json'
 
 
 const app = new Clarifai.App({
-    apiKey: 'c473018868f44ba99c45a4d155bb6c4d'
+    apiKey: 'a6f8a93f608e442382f91aa8b76bd5ec'
 })
 
 class App extends Component {
    constructor (){
        super()
        this.state = {
-           input: '',
-           imageUrl: ''
+           imageUrl: '',
+           box:{}
        }
    
    }
+
+  calculatebox = (response) => {
+      console.log(response)
+      const clarifaiFace = response.outputs[0].data.regions[0].region_info.bounding_box;
+      const imageSize = document.getElementById("imageSize");
+      
+      const width = Number(imageSize.width);
+      const height = Number(imageSize.height);
+  
+      const clariBox = {
+          leftCol: clarifaiFace.left_col * width,
+          topRow: clarifaiFace.top_row * height,
+          rightCol: width - (clarifaiFace.right_col * width) ,
+          bottomRow: height - (clarifaiFace.bottom_row * height)
+      }
+      
+    this.setState({box: clariBox})
+  }
     
   receiveInput = (event) =>{
-     this.setState({input: event.target.value})
+     this.setState({imageUrl: event.target.value})
   }
    
- receiveClick = (event) =>{
-     this.setState({imageUrl: this.state.input})
-    
-      app.models.predict(Clarifai.COLOR_MODEL, this.state.imageUrl).then(
-            function(response) {
-              console.log(response)
-            },
-            function(err) {
-              // there was an error
-            }
-  );
+  receiveClick = (event) =>{ 
+      
+      app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.imageUrl)
+          .then(response => this.calculatebox(response))
+          .catch(err => console.log(err))
   }
-  
   
 
   render() {
     return (
       <div className = 'App'>
-         <Particles
+            {/* <Particles
               params={pc} className ='particles'
-                />
+                />*/}
         <Navigation />
         <Logo />
         <Rank />
         <ImageLinkForm receiveInput={this.receiveInput} 
                        receiveClick={this.receiveClick}/>
-        <FaceRecognition image={this.state.imageUrl} />
+        <FaceRecognition image={this.state.imageUrl} box={this.state.box} />
         </div>
     );
   }
