@@ -14,6 +14,8 @@ import Logo from './components/logo/Logo.js';
 import ImageLinkForm from './components/ImageLinkForm/imageLinkForm.js';
 import FaceRecognition from './components/faceRecognition/FaceRecognition.js';
 import Rank from './components/rank/Rank.js';
+import Sign from './components/sign/Sign.js';
+import Register from './components/register/Register.js';
 
 //json
 import pc from './particlesjs-confi.json'
@@ -28,7 +30,9 @@ class App extends Component {
        super()
        this.state = {
            imageUrl: '',
-           box:{}
+           box:{},
+           route: 'sign',
+           isSignedIn: false
        }
    
    }
@@ -62,19 +66,36 @@ class App extends Component {
           .catch(err => console.log(err))
   }
   
-
+  onRouteChange = (route) => {
+      if((route === 'register') || (route === 'sign')){
+          this.setState({isSignedIn: false})
+      }else if(route === 'home'){
+          this.setState({isSignedIn: true})
+        }
+               this.setState({route: route})
+                console.log(this.state.isSignedIn)
+    }
   render() {
+     const {isSignedIn, box, imageUrl, route} = this.state;
+      
     return (
       <div className = 'App'>
-            {/* <Particles
+            { /*<Particles
               params={pc} className ='particles'
                 />*/}
-        <Navigation />
-        <Logo />
-        <Rank />
-        <ImageLinkForm receiveInput={this.receiveInput} 
-                       receiveClick={this.receiveClick}/>
-        <FaceRecognition image={this.state.imageUrl} box={this.state.box} />
+        <Navigation  onRouteChange = {this.onRouteChange} isSignedIn = {isSignedIn} />
+        {route === 'sign'
+        ? <Sign onRouteChange = {this.onRouteChange}/>
+            : (route === 'register')
+                ? <Register onRouteChange = {this.onRouteChange}/>
+                :<div>
+                 <Logo />
+
+                 <Rank />
+                 <ImageLinkForm receiveInput={this.receiveInput} 
+                               receiveClick={this.receiveClick}/>
+                 <FaceRecognition image={imageUrl} box={box} />
+                 </div> }
         </div>
     );
   }
