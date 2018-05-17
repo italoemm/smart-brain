@@ -63,7 +63,10 @@ app.put('/image', (req,res) => {
 // response with a user if it match with database's user and browser's user
 // "post" cause it's going make request and send data through form or json
 app.post('/signin', (req,res) => {
-    if(req.body.email === database.users[0].email && req.body.password === database.users[0].password){
+    const {email, password} = req.body
+    console.log(req.body)
+    
+    if(email === database.users[0].email && password === database.users[0].password){
           res.send('sucess')
     }else{
        res.status(400).json('email or password invalid')
@@ -88,7 +91,7 @@ app.post('/register', (req,res) => {
             res.json(database.users[database.users.length-1]);
 });
 
-app.listen(3000,() => console.log('it is running'));
+app.listen(3001,() => console.log('it is running'));
 
 
 

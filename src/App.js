@@ -103,3 +103,9 @@ class App extends Component {
 
 
 export default App;
+
+
+
+/* when we are using the same properties (function) of class App to more than one components we have call this properties through a function
+    onClick={()=> onRouteChange('register')}
+*/
