@@ -78,7 +78,7 @@ class Register extends React.Component {
 }
 */
 
-const Register = ({onRouteChange}) => {
+const Register = ({onRouteChange, getUserOnEnter}) => {
     
     const onSubmitSignIn_2_Option = () => {
                 const name = document.getElementById("name").value
@@ -93,16 +93,15 @@ const Register = ({onRouteChange}) => {
                         email: email,
                         password: pass
                     })
-                }).then(response => response.json())
-                  .then(data => console.log(data))
-  
+                }).then((response) => response.json())
+                  .then((data) =>  getUserOnEnter(data))
        // onRouteChange('home');
         }
     
     
     return (
         <div>
-            <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 tc center">
+            <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 tc center " >
                 <main className="pa4 black-80">
                     <form className="measure center"/>
                     

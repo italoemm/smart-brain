@@ -32,7 +32,14 @@ class App extends Component {
            imageUrl: '',
            box:{},
            route: 'sign',
-           isSignedIn: false
+           isSignedIn: false,
+           user: {
+                   id:'',
+                   name: '',
+                   email: '',
+                   entries: '',
+                   joined:'',
+                  }
        }
    
    }
@@ -55,16 +62,33 @@ class App extends Component {
     this.setState({box: clariBox})
   }
     
+  
   receiveInput = (event) =>{
      this.setState({imageUrl: event.target.value})
   }
    
+  
   receiveClick = (event) =>{ 
       
       app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.imageUrl)
           .then(response => this.calculatebox(response))
           .catch(err => console.log(err))
   }
+  
+  
+  getUserOnEnter = (data) =>{
+        const {id, name, email, entries, joined} = data
+          this.setState({ user: {
+                                id:id,
+                                name:name,
+                                email:email,
+                                entries:entries,
+                                joined:joined }
+                        })
+                          
+      console.log(this.state.user)
+  }
+  
   
   onRouteChange = (route) => {
       if((route === 'register') || (route === 'sign')){
@@ -87,7 +111,7 @@ class App extends Component {
         {route === 'sign'
         ? <Sign onRouteChange = {this.onRouteChange}/>
             : (route === 'register')
-                ? <Register onRouteChange = {this.onRouteChange}/>
+                ? <Register onRouteChange = {this.onRouteChange} getUserOnEnter = {this.getUserOnEnter} />
                 :<div>
                  <Logo />
 
