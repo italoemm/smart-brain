@@ -1,6 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const knex = require('knex');
+const bcrypt = require('bcrypt-nodejs');
+
+ const db=knex({
+    client: 'pg',
+    connection: {
+    host : '127.0.0.1',
+    user : 'italo',
+    password : 'minhasenha',
+    database : 'smartBrain'
+        }
+    });
 
 const app = express();
 
@@ -36,13 +48,22 @@ app.get('/', (req,res) => {
 app.get('/profile/:id', (req,res) => {
     const {id} = req.params // get from URL
     
-    const user = database.users.filter((user) => user.id === id) // filter return a array not object
+    db.select('*').table('users').where({id})
+                  .then((user)=> {  
+                        if(user.length){ //a array has size..so if there's any element
+                            res.json(user[0])
+                        }else{
+                            res.status(400).json('not found')
+                        }
+                        }).catch(err =>res.status(400).json('not found'))
+    
+  /* const user = database.users.filter((user) => user.id === id) // filter return a array not object
     
     if(user === undefined){
         res.json('user not found');
     }else{
          res.json(user);
-    }
+    }*/
 });
 
 // how many times the user's image was searched
@@ -50,27 +71,42 @@ app.get('/profile/:id', (req,res) => {
 
 app.put('/image', (req,res) => {
     const {id} = req.body // get from body
-    
-    const user = database.users.filter((user) => user.id === id) // referring to the object that match with ID
+       
+    db.raw('select increm_entries(?)', id) //function
+        .then(response => res.json(response.rows[0]))
+        .catch(err => res.status(400).json(err));
+
+/*    const user = database.users.filter((user) => user.id === id) // referring to the object that match with ID
     
     if(user === undefined){
         res.json('user not found');
     }else{
-         res.json(user[0].entries++);
-    }
+         user[0].entries++
+         res.json(user[0].entries);
+    }*/
 });
 
 // response with a user if it match with database's user and browser's user
 // "post" cause it's going make request and send data through form or json
 app.post('/signin', (req,res) => {
     const {email, password} = req.body
-    console.log(req.body)
     
+    db.select('email', 'hash').from('login')
+	   .where('email','=',email)
+	   .then(data => {
+	     const isValid = bcrypt.compareSync(password,data[0].hash);
+		if(isValid){
+		db.select('*').from('users')
+		  .where('email', '=', email)
+		  .then(user => res.json(user[0]))	
+		 }
+		}).catch(err => res.status(400).json('unable to get user'));
+ /*   
     if(email === database.users[0].email && password === database.users[0].password){
-          res.send('sucess')
+          res.json(database.users[0])
     }else{
        res.status(400).json('email or password invalid')
-    }
+    }*/
 });
 
 
@@ -78,18 +114,12 @@ app.post('/signin', (req,res) => {
 // "post" cause it's going make request and send data through form or json
 app.post('/register', (req,res) => {
     const { name, email, password} = req.body
-    
-    database.users.push(
-        {
-            id: '3',
-            name: name,
-            email: email,
-            password: password,
-            entries: 0,
-            joined: new Date()
-        })
-            res.json(database.users[database.users.length-1]);
-});
+    const hash = bcrypt.hashSync(password);
+          db.raw('select * from register_user(?,?,?)', [name, email, hash]) //function
+              .then(response => res.json(response.rows[0])) //it's going make sure to return a object, otherwise  will return a array 
+              .catch(err => res.status(400).json(err))
+
+    });
 
 app.listen(3001,() => console.log('it is running'));
 

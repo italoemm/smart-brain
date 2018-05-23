@@ -24,16 +24,18 @@ class Register extends React.Component {
     
     onSubmitSignIn = () => {
         fetch('http://localhost:3001/register', {
-            method: 'post',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify ({
-                name: this.state.registerName,
-                email: this.state.registerEmail,
-                password: this.state.registerPass
-            })
-        }).then(response => response.json())
-          .then(data => console.log(data))
-      // this.props.onRouteChange('home')   
+                    method: 'post',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify ({
+                        name: name,
+                        email: email,
+                        password: pass
+                    })
+                }).then((response) => response.json())
+                  .then((data) =>  loadUser(data))
+        
+                    onRouteChange('home');
+     
     }
     
    
@@ -78,7 +80,7 @@ class Register extends React.Component {
 }
 */
 
-const Register = ({onRouteChange, getUserOnEnter}) => {
+const Register = ({onRouteChange, loadUser}) => {
     
     const onSubmitSignIn_2_Option = () => {
                 const name = document.getElementById("name").value
@@ -94,8 +96,9 @@ const Register = ({onRouteChange, getUserOnEnter}) => {
                         password: pass
                     })
                 }).then((response) => response.json())
-                  .then((data) =>  getUserOnEnter(data))
-       // onRouteChange('home');
+                  .then((data) =>  loadUser(data))
+        
+                    onRouteChange('home');
         }
     
     
@@ -111,12 +114,14 @@ const Register = ({onRouteChange, getUserOnEnter}) => {
                     <div className="mt3">
                         <label className="db fw6 lh-copy f6" htmlFor="email-address">Name</label>
                         <input className="pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="text" name="name"  id="name"/>
+
                     </div>
-                    
+
                      <div className="mt3">
                         <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
                         <input className="pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="email" name="email-address"  id="email-address"/>
                     </div>
+                    
                     
                     <div className="mv3">
                         <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>

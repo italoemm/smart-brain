@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 /*
 class Sign extends React.Component {
   
@@ -86,7 +87,7 @@ class Sign extends React.Component {
 
 
 //I can replace all this stuff above to only this function below
-const Sign = ({onRouteChange}) => {
+const Sign = ({onRouteChange, loadUser}) => {
 
        const onSubmitSignIn_2_Option = () => {
                 const email = document.getElementById("email-address").value
@@ -99,9 +100,10 @@ const Sign = ({onRouteChange}) => {
                         email: email,
                         password: pass
                     })
-                }).then(response => console.log(response))  
+                }).then((response) => response.json())
+                  .then((data) =>  loadUser(data))
 
-               // onRouteChange('home')     
+                onRouteChange('home')     
     }
              
     return (
@@ -114,21 +116,22 @@ const Sign = ({onRouteChange}) => {
 
                     <div className="mt3">
                         <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-                        <input className="pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="email" name="email-address"  id="email-address"/>
+                        <input className="pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="email" name="email-address"  id="email-address" />
                                
                     </div>
 
                     <div className="mv3">
                         <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
                         <input className="b pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" 
-                                type="password" name="pass"  id="pass"/>
+                                type="password" name="pass"  id="pass" />
                     </div>
 
                     <div className="">
                         <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
                                 type="submit" 
                                 value="signIn" 
-                                onClick= {onSubmitSignIn_2_Option}/>
+                                onClick= {onSubmitSignIn_2_Option}
+                                    />
                     </div>
                     
                     

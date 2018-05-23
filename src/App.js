@@ -38,12 +38,27 @@ class App extends Component {
                    name: '',
                    email: '',
                    entries: '',
-                   joined:'',
+                   joined:''
                   }
        }
    
    }
 
+  loadUser = (data) =>{
+        const {id, name, email, entries, joined} = data
+          this.setState({ user: {
+                                id:id,
+                                name:name,
+                                email:email,
+                                entries:entries,
+                                joined:joined }
+                        })
+                          
+      console.log(this.state.user)
+  }
+  
+  
+    
   calculatebox = (response) => {
       console.log(response)
       const clarifaiFace = response.outputs[0].data.regions[0].region_info.bounding_box;
@@ -73,23 +88,18 @@ class App extends Component {
       app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.imageUrl)
           .then(response => this.calculatebox(response))
           .catch(err => console.log(err))
-  }
-  
-  
-  getUserOnEnter = (data) =>{
-        const {id, name, email, entries, joined} = data
-          this.setState({ user: {
-                                id:id,
-                                name:name,
-                                email:email,
-                                entries:entries,
-                                joined:joined }
-                        })
-                          
-      console.log(this.state.user)
-  }
-  
-  
+      
+       fetch('http://localhost:3001/image', {
+                    method: 'put',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify ({
+                        id: this.state.user.id
+                    })
+                }).then((response) => response.json())
+                  .then((count) => Object.assign(this.state.user, {entries: count}))
+
+    }
+ 
   onRouteChange = (route) => {
       if((route === 'register') || (route === 'sign')){
           this.setState({isSignedIn: false})
@@ -99,8 +109,9 @@ class App extends Component {
                this.setState({route: route})
                 console.log(this.state.isSignedIn)
     }
+  
   render() {
-     const {isSignedIn, box, imageUrl, route} = this.state;
+     const {isSignedIn, box, imageUrl, route, user} = this.state;
       
     return (
       <div className = 'App'>
@@ -109,13 +120,13 @@ class App extends Component {
                 />*/}
         <Navigation  onRouteChange = {this.onRouteChange} isSignedIn = {isSignedIn} />
         {route === 'sign'
-        ? <Sign onRouteChange = {this.onRouteChange}/>
+        ? <Sign onRouteChange = {this.onRouteChange} loadUser={this.loadUser} />
             : (route === 'register')
-                ? <Register onRouteChange = {this.onRouteChange} getUserOnEnter = {this.getUserOnEnter} />
+                ? <Register onRouteChange = {this.onRouteChange} loadUser={this.loadUser} />
                 :<div>
                  <Logo />
 
-                 <Rank />
+                 <Rank user ={user} />
                  <ImageLinkForm receiveInput={this.receiveInput} 
                                receiveClick={this.receiveClick}/>
                  <FaceRecognition image={imageUrl} box={box} />
