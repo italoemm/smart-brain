@@ -88,23 +88,51 @@ class Sign extends React.Component {
 
 //I can replace all this stuff above to only this function below
 const Sign = ({onRouteChange, loadUser}) => {
+    
+        const validateField = (email,pass) => {
+            if (email && pass) {
+                var re = /^[a-zA-Z0-9\-_]+(\.[a-zA-Z0-9\-_]+)*@[a-z0-9]+(\-[a-z0-9]+)*(\.[a-z0-9]+(\-[a-z0-9]+)*)*\.[a-z]{2,4}$/;
+                if (re.test(email)) {
+                    return true
+                } else {
+                    alert('Bad email address: ' + email);
+                    return false
+                }
+            } else {
+                alert('Fields can not be empty ');
+                return false
+            }
+        }
+        
+        
+        const onSubmitSignIn_2_Option = () => {
+            const email = document.getElementById("email-address").value
+            const pass = document.getElementById("pass").value
 
-       const onSubmitSignIn_2_Option = () => {
-                const email = document.getElementById("email-address").value
-                const pass = document.getElementById("pass").value
-
+            const isValid = validateField(email, pass)
+           
+            if (isValid) {
                 fetch('http://localhost:3001/signin', {
-                    method: 'post',
-                    headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify ({
-                        email: email,
-                        password: pass
-                    })
-                }).then((response) => response.json())
-                  .then((data) =>  loadUser(data))
-
-                onRouteChange('home')     
-    }
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: pass
+                        })
+                    }).then((response) => response.json())
+                      .then((user) => {
+                        if (user.id) { /* if return a catch with a string that's diferente object that have a id*/
+                            console.log(user)
+                            loadUser(user)
+                            onRouteChange('home')
+                        } else {
+                            alert('email or password wrong')
+                        }
+                    }).catch(Error => console.log(Error))
+            }
+        }
              
     return (
         <div>
