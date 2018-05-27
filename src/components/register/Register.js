@@ -134,23 +134,23 @@ const validateField = (email, pass, name) => {
 
                     <div className="mt3">
                         <label className="db fw6 lh-copy f6" htmlFor="email-address">Name</label>
-                        <input className="pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="text" name="name"  id="name"/>
+                        <input className="pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="text" name="name"  id="name" style = {{'position':'sticky'}}/>
 
                     </div>
 
                      <div className="mt3">
                         <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-                        <input className="pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="email" name="email-address"  id="email-address"/>
+                        <input className="pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="email" name="email-address"  id="email-address" style = {{'position':'sticky'}}/>
                     </div>
                     
                     
                     <div className="mv3">
                         <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-                        <input className="b pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="password" name="password"  id="pass"/>
+                        <input className="b pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="password" name="password"  id="pass" style = {{'position':'sticky'}}/>
                     </div>
 
                     <div>
-                        <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="register" onClick={onSubmitSignIn_2_Option}/>
+                        <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="register" onClick={onSubmitSignIn_2_Option} style = {{'position':'sticky'}}/>
                     </div>
                  
                 </main>

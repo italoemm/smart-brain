@@ -144,14 +144,14 @@ const Sign = ({onRouteChange, loadUser}) => {
 
                     <div className="mt3">
                         <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-                        <input className="pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="email" name="email-address"  id="email-address" />
+                        <input className="pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="email" name="email-address"  id="email-address" style = {{'position':'sticky'}} />
                                
                     </div>
 
                     <div className="mv3">
                         <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
                         <input className="b pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" 
-                                type="password" name="pass"  id="pass" />
+                                type="password" name="pass"  id="pass" style = {{'position':'sticky'}} />
                     </div>
 
                     <div className="">
@@ -164,7 +164,8 @@ const Sign = ({onRouteChange, loadUser}) => {
                     
                     
                     <div className="lh-copy mt3">
-                          <p onClick={()=> onRouteChange('register')} className="f6 link dim black db pointer">Register</p>
+                          <p onClick={()=> onRouteChange('register')} className="f6 link dim black db pointer" 
+                              style = {{'position':'sticky'}}>Register</p>
                     </div>
                 </main>
         </article>
@@ -173,6 +174,7 @@ const Sign = ({onRouteChange, loadUser}) => {
     );
 }
 export default Sign;
+
 
 
 
