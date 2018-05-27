@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'tachyons';
 import 'react-tilt';
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
+
 
 
 //css
@@ -21,29 +21,38 @@ import Register from './components/register/Register.js';
 import pc from './particlesjs-confi.json'
 
 
-const app = new Clarifai.App({
-    apiKey: 'a6f8a93f608e442382f91aa8b76bd5ec'
-})
+const initialState = {
+               imageUrl: '',
+               box:{},
+               route: 'signIn',
+               isSignedIn: false,
+               user: {
+                       id:'',
+                       name: '',
+                       email: '',
+                       entries: '',
+                       joined:''
+                      }
+       }
 
 class App extends Component {
    constructor (){
        super()
-       this.state = {
-           imageUrl: '',
-           box:{},
-           route: 'sign',
-           isSignedIn: false,
-           user: {
-                   id:'',
-                   name: '',
-                   email: '',
-                   entries: '',
-                   joined:'',
-                  }
-       }
+       this.state = initialState;
    
    }
 
+  loadUser = (data) =>{
+        const {id, name, email, entries, joined} = data
+          this.setState({ user: {
+                                id:id,
+                                name:name,
+                                email:email,
+                                entries:entries,
+                                joined:joined }
+                        })
+  }
+    
   calculatebox = (response) => {
       console.log(response)
       const clarifaiFace = response.outputs[0].data.regions[0].region_info.bounding_box;
@@ -68,54 +77,61 @@ class App extends Component {
   }
    
   
-  receiveClick = (event) =>{ 
+  receiveClick = (event) => {
+
+          fetch('http://localhost:3001/imageApiCall', {
+                  method: 'post',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ 
+                      linkImage: this.state.imageUrl
+                  })
+            }).then(response => response.json())
+              .then(response => {
+                  if (response) {
+                      this.calculatebox(response)
+                      fetch('http://localhost:3001/image', {
+                              method: 'put',
+                              headers: {'Content-Type': 'application/json'},
+                              body: JSON.stringify({
+                                  id: this.state.user.id
+                              })
+                          }).then((response) => response.json())
+                            .then((count) => Object.assign(this.state.user, { entries: count} ))
+                          }
+          }).catch(console.log)
       
-      app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.imageUrl)
-          .then(response => this.calculatebox(response))
-          .catch(err => console.log(err))
-  }
-  
-  
-  getUserOnEnter = (data) =>{
-        const {id, name, email, entries, joined} = data
-          this.setState({ user: {
-                                id:id,
-                                name:name,
-                                email:email,
-                                entries:entries,
-                                joined:joined }
-                        })
-                          
-      console.log(this.state.user)
-  }
-  
-  
+    }
+ 
   onRouteChange = (route) => {
-      if((route === 'register') || (route === 'sign')){
+      if((route === 'register') || (route === 'signIn') ){
+          
+          this.setState({initialState})
           this.setState({isSignedIn: false})
+
       }else if(route === 'home'){
           this.setState({isSignedIn: true})
-        }
+        }           
+               console.log(this.state.isSignedIn)
                this.setState({route: route})
-                console.log(this.state.isSignedIn)
     }
+  
   render() {
-     const {isSignedIn, box, imageUrl, route} = this.state;
+     const {isSignedIn, box, imageUrl, route, user} = this.state;
       
     return (
       <div className = 'App'>
-            { /*<Particles
+            {/* <Particles
               params={pc} className ='particles'
                 />*/}
         <Navigation  onRouteChange = {this.onRouteChange} isSignedIn = {isSignedIn} />
-        {route === 'sign'
-        ? <Sign onRouteChange = {this.onRouteChange}/>
+        {route === 'signIn'
+        ? <Sign onRouteChange = {this.onRouteChange} loadUser={this.loadUser} />
             : (route === 'register')
-                ? <Register onRouteChange = {this.onRouteChange} getUserOnEnter = {this.getUserOnEnter} />
+                ? <Register onRouteChange = {this.onRouteChange} loadUser={this.loadUser} />
                 :<div>
                  <Logo />
 
-                 <Rank />
+                 <Rank user ={user} />
                  <ImageLinkForm receiveInput={this.receiveInput} 
                                receiveClick={this.receiveClick}/>
                  <FaceRecognition image={imageUrl} box={box} />

@@ -1,0 +1,57 @@
+create table users(
+		id serial primary key,
+		name varchar(100),
+		email text unique not null,
+		entries bigint default 0,
+		joined timestamp
+);
+
+create table login(
+		id serial primary key,
+		email text unique NOT NULL,
+		hash  varchar(100) NOT NULL
+);
+
+insert into users (name,email,entries,joined) values ('italo','italo@hotmail.com','1',now())
+
+delete from users where id =6;
+select * from users;
+GRANT ALL PRIVILEGES ON TABLE users TO public;
+
+
+
+
+
+
+
+
+
+delete from users where id >1;
+select * from users;
+
+insert into users (name,email) values ('italo','italo@hotmail.com')
+DROP FUNCTION increm_entries(integer)
+
+CREATE or REPLACE FUNCTION increm_entries(params integer)
+RETURNS integer as $func$
+DECLARE
+now integer;
+BEGIN
+UPDATE users SET entries = entries + 1 where id = params;
+SELECT entries INTO now FROM users WHERE id = params;
+RETURN now;
+END;
+$func$ LANGUAGE plpgsql
+
+CREATE or REPLACE FUNCTION check_user(email text, pass text)
+RETURNS boolean as $func$
+DECLARE
+isExist boolean;
+BEGIN
+
+SELECT l.login l.has
+RETURN isExist;
+END;
+$func$ LANGUAGE plpgsql
+
+select increm_entries(28);

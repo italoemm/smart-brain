@@ -24,16 +24,18 @@ class Register extends React.Component {
     
     onSubmitSignIn = () => {
         fetch('http://localhost:3001/register', {
-            method: 'post',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify ({
-                name: this.state.registerName,
-                email: this.state.registerEmail,
-                password: this.state.registerPass
-            })
-        }).then(response => response.json())
-          .then(data => console.log(data))
-      // this.props.onRouteChange('home')   
+                    method: 'post',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify ({
+                        name: name,
+                        email: email,
+                        password: pass
+                    })
+                }).then((response) => response.json())
+                  .then((data) =>  loadUser(data))
+        
+                    onRouteChange('home');
+     
     }
     
    
@@ -78,25 +80,47 @@ class Register extends React.Component {
 }
 */
 
-const Register = ({onRouteChange, getUserOnEnter}) => {
+const Register = ({onRouteChange, loadUser}) => {
+    
+const validateField = (email, pass, name) => {
+    if (email && pass && name) {
+        var re = /^[a-zA-Z0-9\-_]+(\.[a-zA-Z0-9\-_]+)*@[a-z0-9]+(\-[a-z0-9]+)*(\.[a-z0-9]+(\-[a-z0-9]+)*)*\.[a-z]{2,4}$/;
+        if (re.test(email)) {
+            return true
+        } else {
+            alert('Bad email address: ' + email);
+            return false
+        }
+    } else {
+        alert('Fields can not be empty ');
+        return false
+    }
+}
     
     const onSubmitSignIn_2_Option = () => {
-                const name = document.getElementById("name").value
-                const email = document.getElementById("email-address").value
-                const pass = document.getElementById("pass").value
+        const name = document.getElementById("name").value
+        const email = document.getElementById("email-address").value
+        const pass = document.getElementById("pass").value
 
-                fetch('http://localhost:3001/register', {
+        const isValid = validateField(email, pass, name)
+
+        if (isValid) {
+            fetch('http://localhost:3001/register', {
                     method: 'post',
-                    headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify ({
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
                         name: name,
                         email: email,
                         password: pass
                     })
                 }).then((response) => response.json())
-                  .then((data) =>  getUserOnEnter(data))
-       // onRouteChange('home');
+                .then((user) => loadUser(user))
+
+            onRouteChange('home');
         }
+    }
     
     
     return (
@@ -111,12 +135,14 @@ const Register = ({onRouteChange, getUserOnEnter}) => {
                     <div className="mt3">
                         <label className="db fw6 lh-copy f6" htmlFor="email-address">Name</label>
                         <input className="pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="text" name="name"  id="name"/>
+
                     </div>
-                    
+
                      <div className="mt3">
                         <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
                         <input className="pa2 input-reset ba bg-transparent hover-bg-dark-green hover-white w-100" type="email" name="email-address"  id="email-address"/>
                     </div>
+                    
                     
                     <div className="mv3">
                         <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
