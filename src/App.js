@@ -120,9 +120,9 @@ class App extends Component {
       
     return (
       <div className = 'App'>
-            {/* <Particles
+            {<Particles
               params={pc} className ='particles'
-                />*/}
+                />}
         <Navigation  onRouteChange = {this.onRouteChange} isSignedIn = {isSignedIn} />
         {route === 'signIn'
         ? <Sign onRouteChange = {this.onRouteChange} loadUser={this.loadUser} />
