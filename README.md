@@ -8,6 +8,8 @@ It was made following the UDEMY course "The Complete Web Developer in 2018: Zero
 
 it Uses the clarifai API (https://www.clarifai.com/) for the face recognition.
 
+The code was heavily commented, So that it can be very undantandble 
+
 # Tools/Frameworks used:
 <ul>
   <li>React.js</li>
